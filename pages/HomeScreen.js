@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  FormControl,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Container, FormControl, Select, TextField } from "@mui/material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 export default function Home() {
   const [country, setCountry] = useState([]);
@@ -64,13 +58,10 @@ export default function Home() {
         }
         if (value.value2 != 1) {
           if (country[currency] == value.value2) {
-            // console.log(currency);
             setSelect2(currency);
           }
         }
       });
-      // console.log(select.select1);
-      // console.log(select2);
     }
 
     setValue({
