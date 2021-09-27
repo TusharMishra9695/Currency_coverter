@@ -4,19 +4,13 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 export default function Home() {
   const [country, setCountry] = useState([]);
   const [value, setValue] = useState({
-    value1: 1,
-    value2: 1,
+    value1: "AED",
+    value2: "AED",
     text1: 1,
     text2: 1,
     texthandle: false,
   });
   const [time, setTime] = useState([]);
-  const [select, setSelect] = useState({
-    select1: "AED",
-    select2: "AED",
-  });
-
-  const [select2, setSelect2] = useState("AED");
 
   useEffect(() => {
     getData();
@@ -27,7 +21,7 @@ export default function Home() {
         "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
       );
       const postData = await res.json();
-      console.log(postData.rates);
+      // console.log(postData.rates);
       // console.log(country);
 
       setCountry(postData.rates);
@@ -44,29 +38,31 @@ export default function Home() {
   }
   function convert(e) {
     e.preventDefault();
-    {
-      Object.keys(country).map((currency) => {
-        // console.log(value.value1);
-        if (value.value1 != 1) {
-          if (country[currency] == value.value1) {
-            // console.log(currency);
-            setSelect({
-              ...select,
-              select1: currency,
-            });
-          }
-        }
-        if (value.value2 != 1) {
-          if (country[currency] == value.value2) {
-            setSelect2(currency);
-          }
-        }
-      });
-    }
+    // {
+    //   Object.keys(country).map((currency) => {
+    //     // console.log(value.value1);
+    //     if (value.value1 != 1) {
+    //       if (country[currency] == value.value1) {
+    //         // console.log(currency);
+    //         setSelect({
+    //           ...select,
+    //           select1: currency,
+    //         });
+    //       }
+    //     }
+    //     if (value.value2 != 1) {
+    //       if (country[currency] == value.value2) {
+    //         setSelect2(currency);
+    //       }
+    //     }
+    //   });
+    // }
+    // console.log("check" + country[value.value1]);
+    // console.log("check" + country[value.value2]);
 
     setValue({
       ...value,
-      text2: (value.value2 / value.value1) * value.text1,
+      text2: (country[value.value2] / country[value.value1]) * value.text1,
     });
   }
 
@@ -83,10 +79,10 @@ export default function Home() {
           <Container>
             <div>
               <h2 style={{ marginBottom: "-25px" }}>
-                {value.text1} {select.select1} =
+                {value.text1} {value.value1} =
               </h2>
               <h1 style={{ marginBottom: "0px" }}>
-                {value.text2} {select2}
+                {value.text2} {value.value2}
               </h1>
               <span style={{ fontSize: "14px", color: "grey" }}>
                 Latest update : {time.date}
@@ -116,7 +112,7 @@ export default function Home() {
                       <Select native>
                         {Object.keys(country).map((currency2, index) => {
                           return (
-                            <option key={index} value={country[currency2]}>
+                            <option key={index} value={currency2}>
                               {currency2}
                             </option>
                           );
@@ -159,7 +155,7 @@ export default function Home() {
                       <Select native>
                         {Object.keys(country).map((currency2, index) => {
                           return (
-                            <option key={index} value={country[currency2]}>
+                            <option key={index} value={currency2}>
                               {currency2}
                             </option>
                           );
