@@ -11,59 +11,73 @@ export default function Home() {
     texthandle: false,
   });
   const [time, setTime] = useState([]);
-
   useEffect(() => {
-    getData();
+    getDatas();
   }, []);
   async function getData() {
-    if (value.texthandle === false) {
+    if (localStorage.getItem("postData") == null) {
       const res = await fetch(
         "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
       );
       const postData = await res.json();
-      // console.log(postData.rates);
-      // console.log(country);
-
-      setCountry(postData.rates);
-      setValue({
-        ...value,
-        texthandle: true,
-      });
-      setTime(postData);
-
-      // console.log("I am " + country);
+      console.log(postData);
+      localStorage.setItem("postData", JSON.stringify(postData.rates));
+      localStorage.setItem("baseData", JSON.stringify(postData));
     } else {
-      alert("api already called");
+      alert(" API call's only once a day ");
     }
+    const result = JSON.parse(localStorage.getItem("postData"));
+    const result2 = JSON.parse(localStorage.getItem("baseData"));
+
+    setCountry(result);
+    setValue({
+      ...value,
+      texthandle: true,
+    });
+    setTime(result2);
   }
   function convert(e) {
     e.preventDefault();
-    // {
-    //   Object.keys(country).map((currency) => {
-    //     // console.log(value.value1);
-    //     if (value.value1 != 1) {
-    //       if (country[currency] == value.value1) {
-    //         // console.log(currency);
-    //         setSelect({
-    //           ...select,
-    //           select1: currency,
-    //         });
-    //       }
-    //     }
-    //     if (value.value2 != 1) {
-    //       if (country[currency] == value.value2) {
-    //         setSelect2(currency);
-    //       }
-    //     }
-    //   });
-    // }
-    // console.log("check" + country[value.value1]);
-    // console.log("check" + country[value.value2]);
-
     setValue({
       ...value,
       text2: (country[value.value2] / country[value.value1]) * value.text1,
     });
+  }
+  async function getDatas() {
+    const cacheVersion = 1;
+    const cacheName = `myapp-${cacheVersion}`;
+    const url =
+      "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
+    let cachedData = await getCachedData(cacheName, url);
+
+    if (cachedData) {
+      console.log("Retrieved cached data");
+      return cachedData;
+    }
+
+    console.log("Fetching fresh data");
+
+    const cacheStorage = await caches.open(cacheName);
+    await cacheStorage.add(url);
+    cachedData = await getCachedData(cacheName, url);
+    return cachedData;
+  }
+  async function getCachedData(cacheName, url) {
+    const cacheStorage = await caches.open(cacheName);
+    const cachedResponse = await cacheStorage.match(url);
+
+    if (!cachedResponse || !cachedResponse.ok) {
+      return false;
+    }
+
+    return await cachedResponse.json();
+  }
+
+  try {
+    const data = getDatas();
+    console.log({ data });
+  } catch (error) {
+    console.error({ error });
   }
 
   return (
