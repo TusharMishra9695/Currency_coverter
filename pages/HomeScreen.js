@@ -14,54 +14,53 @@ export default function Home() {
   useEffect(() => {
     getDatas();
   }, []);
-  async function getData() {
-    if (localStorage.getItem("postData") == null) {
-      const res = await fetch(
-        "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
-      );
-      const postData = await res.json();
-      console.log(postData);
-      localStorage.setItem("postData", JSON.stringify(postData.rates));
-      localStorage.setItem("baseData", JSON.stringify(postData));
-    } else {
-      alert(" API call's only once a day ");
-    }
-    const result = JSON.parse(localStorage.getItem("postData"));
-    const result2 = JSON.parse(localStorage.getItem("baseData"));
+  // async function getData() {
+  //   if (localStorage.getItem("postData") == null) {
+  //     const res = await fetch(
+  //       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
+  //     );
+  //     const postData = await res.json();
+  //     console.log(postData);
+  //     localStorage.setItem("postData", JSON.stringify(postData.rates));
+  //     localStorage.setItem("baseData", JSON.stringify(postData));
+  //   } else {
+  //     alert(" API call's only once a day ");
+  //   }
+  //   // const result = JSON.parse(localStorage.getItem("postData"));
+  //   // const result2 = JSON.parse(localStorage.getItem("baseData"));
+  //   setCountry(result);
+  //   setValue({
+  //     ...value,
+  //     texthandle: true,
+  //   });
+  //   setTime(result2);
+  // }
 
-    setCountry(result);
-    setValue({
-      ...value,
-      texthandle: true,
-    });
-    setTime(result2);
-  }
-  function convert(e) {
-    e.preventDefault();
-    setValue({
-      ...value,
-      text2: (country[value.value2] / country[value.value1]) * value.text1,
-    });
-  }
   async function getDatas() {
     const cacheVersion = 1;
     const cacheName = `myapp-${cacheVersion}`;
     const url =
       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
-    let cachedData = await getCachedData(cacheName, url);
-
-    if (cachedData) {
-      console.log("Retrieved cached data");
-      return cachedData;
-    }
-
-    console.log("Fetching fresh data");
 
     const cacheStorage = await caches.open(cacheName);
-    await cacheStorage.add(url);
-    cachedData = await getCachedData(cacheName, url);
-    return cachedData;
+    console.log(cacheStorage);
+    const cachedResponses = await cacheStorage.match(url);
+    if (cachedResponses === undefined) {
+      await cacheStorage.add(url);
+      console.log("API Calling.......");
+      console.log("API Called");
+    } else {
+      console.log("API call's only once a day");
+    }
+    let postData = await getCachedData(cacheName, url);
+    setCountry(postData.rates);
+    setValue({
+      ...value,
+      texthandle: true,
+    });
+    setTime(postData);
   }
+
   async function getCachedData(cacheName, url) {
     const cacheStorage = await caches.open(cacheName);
     const cachedResponse = await cacheStorage.match(url);
@@ -72,12 +71,12 @@ export default function Home() {
 
     return await cachedResponse.json();
   }
-
-  try {
-    const data = getDatas();
-    console.log({ data });
-  } catch (error) {
-    console.error({ error });
+  function convert(e) {
+    e.preventDefault();
+    setValue({
+      ...value,
+      text2: (country[value.value2] / country[value.value1]) * value.text1,
+    });
   }
 
   return (
