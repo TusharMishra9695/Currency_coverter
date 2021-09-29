@@ -14,27 +14,28 @@ export default function Home() {
   useEffect(() => {
     getDatas();
   }, []);
-  // async function getData() {
-  //   if (localStorage.getItem("postData") == null) {
-  //     const res = await fetch(
-  //       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
-  //     );
-  //     const postData = await res.json();
-  //     console.log(postData);
-  //     localStorage.setItem("postData", JSON.stringify(postData.rates));
-  //     localStorage.setItem("baseData", JSON.stringify(postData));
-  //   } else {
-  //     alert(" API call's only once a day ");
-  //   }
-  //   // const result = JSON.parse(localStorage.getItem("postData"));
-  //   // const result2 = JSON.parse(localStorage.getItem("baseData"));
-  //   setCountry(result);
-  //   setValue({
-  //     ...value,
-  //     texthandle: true,
-  //   });
-  //   setTime(result2);
-  // }
+  async function getData() {
+    if (localStorage.getItem("postData") == null) {
+      const res = await fetch(
+        "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
+      );
+      const postData = await res.json();
+      console.log(postData);
+      localStorage.setItem("postData", JSON.stringify(postData.rates));
+      localStorage.setItem("baseData", JSON.stringify(postData));
+    } else {
+      alert(" API call's only once a day ");
+    }
+
+    const result = JSON.parse(localStorage.getItem("postData"));
+    const result2 = JSON.parse(localStorage.getItem("baseData"));
+    setCountry(result);
+    setValue({
+      ...value,
+      texthandle: true,
+    });
+    setTime(result2);
+  }
 
   async function getDatas() {
     const cacheVersion = 1;

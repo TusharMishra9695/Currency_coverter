@@ -14,3 +14,67 @@ a {
 * {
   box-sizing: border-box;
 }
+.header {
+  text-align: center;
+}
+
+.btn {
+  background-color: #aaa;
+  border-radius: 4px;
+  color: white;
+  padding: 0.25rem 0.75rem;
+}
+.btn {
+  background-color: #aaa;
+  border-radius: 4px;
+  color: white;
+  padding: 0.25rem 0.75rem;
+}
+
+.btn:hover {
+  background-color: #888;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-npm {
+  background-color: #cc3534;
+}
+.btn-npm:hover {
+  background-color: #b8302f;
+}
+.btn-gh {
+  background-color: #444;
+}
+.btn-gh:hover {
+  background-color: #333;
+}
+.btn-chartjs {
+  background-color: #f27173;
+}
+.btn-chartjs:hover {
+  background-color: #e25f5f;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.links a {
+  align-items: center;
+  display: flex;
+  font-size: 0.9rem;
+  margin: 0.2rem;
+}
