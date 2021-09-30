@@ -52,7 +52,7 @@ export default function ExchangeRate() {
   }
   function handleChart(e) {
     if (e.target.value == "A-Z") {
-      console.log(handleValue.sort());
+      console.log(handleValue2.sort());
       setData({
         ...data,
         labels: handleValue2.slice(0, 16),
@@ -71,7 +71,7 @@ export default function ExchangeRate() {
       console.log(e.target.value);
     }
     if (e.target.value == "Z-A") {
-      console.log(handleValue.reverse());
+      console.log(handleValue2.reverse());
       setData({
         ...data,
         labels: handleValue2.slice(0, 16),
