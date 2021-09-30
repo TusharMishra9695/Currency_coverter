@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, FormControl, Select, TextField } from "@mui/material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import { getCachedData } from "../public/funct";
 export default function Home() {
   const [country, setCountry] = useState([]);
   const [value, setValue] = useState({
@@ -62,16 +63,6 @@ export default function Home() {
     setTime(postData);
   }
 
-  async function getCachedData(cacheName, url) {
-    const cacheStorage = await caches.open(cacheName);
-    const cachedResponse = await cacheStorage.match(url);
-
-    if (!cachedResponse || !cachedResponse.ok) {
-      return false;
-    }
-
-    return await cachedResponse.json();
-  }
   function convert(e) {
     e.preventDefault();
     setValue({
