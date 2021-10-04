@@ -112,13 +112,32 @@ export default function ExchangeRate() {
       });
     }
     if (e.target.value === "high") {
-      let val;
-      val = handleValue.handle1;
-      val = Object.values(val).sort((a, b) => a - b);
-      console.log(val.reverse());
-      val = Object.values(val).slice(0, 15);
-      console.log(val);
-      console.log(handleValue.handle1);
+      const sortable = Object.fromEntries(
+        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
+      );
+
+      console.log(sortable);
+      // console.log(Object.keys(sortable));
+
+      // var sortable = [];
+      // for (var vehicle in handleValue.handle1) {
+      //   sortable.push([vehicle, handleValue.handle1[vehicle]]);
+      // }
+
+      // sortable.sort(function (a, b) {
+      //   return a[1] - b[1];
+      // });
+      // console.log(sortable);
+      // var k = Object.values(sortable);
+      // console.log(Object.values(k));
+
+      // let val;
+      // val = handleValue.handle1;
+      // val = Object.values(val).sort((a, b) => a - b);
+      // console.log(val.reverse());
+      // val = Object.values(val).slice(0, 15);
+      // console.log(val);
+      // console.log(handleValue.handle1);
       // Object.keys(val).map(() => {
       //   Object.keys(handleValue.handle1).map(() => {
       //     if (Object.values(val) == Object.values(handleValue.handle1)) {
@@ -132,11 +151,12 @@ export default function ExchangeRate() {
       // });
       setData({
         ...data,
-        labels: Object.values(val).slice(0, 15),
+
+        labels: Object.keys(sortable).slice(0, 15),
         datasets: [
           {
             ...data.datasets[0],
-            data: val.slice(0, 16),
+            data: Object.values(sortable).slice(0, 15),
           },
         ],
       });

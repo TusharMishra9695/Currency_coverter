@@ -11,9 +11,6 @@ export async function getCachedData(cacheName, url) {
 
 export const option = [
   {
-    options: "please select",
-  },
-  {
     options: "A-Z",
   },
   {
