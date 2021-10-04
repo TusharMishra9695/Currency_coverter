@@ -8,3 +8,21 @@ export async function getCachedData(cacheName, url) {
 
   return await cachedResponse.json();
 }
+
+export const option = [
+  {
+    options: "please select",
+  },
+  {
+    options: "A-Z",
+  },
+  {
+    options: "Z-A",
+  },
+  {
+    options: "low",
+  },
+  {
+    options: "high",
+  },
+];

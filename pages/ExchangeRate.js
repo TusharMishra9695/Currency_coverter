@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import { Bar } from "react-chartjs-2";
-import { getCachedData } from "../public/funct";
+import { getCachedData, option } from "../public/funct";
 export default function ExchangeRate() {
-  const [handleValue, setHandleValue] = useState([]);
+  const [handleValue, setHandleValue] = useState([
+    {
+      handle1: null,
+    },
+  ]);
   const [handleValue2, setHandleValue2] = useState([]);
   const [data, setData] = useState({
-    labels: handleValue2,
+    labels: handleValue,
     datasets: [
       {
         label: "# of Votes",
@@ -35,7 +39,6 @@ export default function ExchangeRate() {
   useEffect(() => {
     getDatas();
   }, []);
-
   async function getDatas() {
     const cacheVersion = 1;
     const cacheName = `myapp-${cacheVersion}`;
@@ -43,90 +46,100 @@ export default function ExchangeRate() {
       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
 
     // here url and cacheName is declared due to get data from cache storage and also for recognize parameter
-
+    //
     let postData = await getCachedData(cacheName, url);
-    setHandleValue(Object.values(postData.rates));
+
+    setHandleValue({ handle1: postData.rates });
     setHandleValue2(Object.keys(postData.rates));
-    // console.log(handleValue);
-    // console.log(handleValue2);
+    // console.log(handleValue.handle1);
   }
   function handleChart(e) {
-    if (e.target.value == "A-Z") {
-      console.log(handleValue2.sort());
+    if (e.target.value === "A-Z") {
+      let val;
+      val = handleValue.handle1;
+      val = Object.values(val).sort((a, b) => a - b);
+      console.log(val);
+      console.log(handleValue.handle1);
       setData({
         ...data,
-        labels: handleValue2.slice(0, 16),
-      });
-      setData({
-        ...data,
+        labels: Object.values(val).slice(0, 15),
         datasets: [
           {
             ...data.datasets[0],
-            data: handleValue.slice(0, 16),
+            data: Object.values(val).slice(0, 15),
           },
         ],
       });
-      console.log(data.labels);
-      console.log(data.datasets[0].data);
-      console.log(e.target.value);
-    }
-    if (e.target.value == "Z-A") {
-      console.log(handleValue2.reverse());
-      setData({
-        ...data,
-        labels: handleValue2.slice(0, 16),
-      });
-      setData({
-        ...data,
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: handleValue.slice(0, 16),
-          },
-        ],
-      });
-      console.log(data.labels);
-      console.log(data.datasets[0].data);
-      console.log(e.target.value);
+      // console.log(data.labels);
+      // console.log(data.datasets[0].data);
+      // console.log(e.target.value);
     }
 
-    if (e.target.value == "low") {
-      console.log(handleValue.sort());
+    if (e.target.value === "Z-A") {
+      let val;
+      val = handleValue.handle1;
+      val = Object.values(val).sort((a, b) => a - b);
+      console.log(val.reverse());
+      console.log(val);
+      console.log(handleValue.handle1);
       setData({
         ...data,
-        labels: handleValue2.slice(0, 16),
-      });
-      setData({
-        ...data,
+        labels: Object.values(val).slice(0, 15),
         datasets: [
           {
             ...data.datasets[0],
-            data: handleValue.slice(0, 16),
+            data: val.slice(0, 16),
           },
         ],
       });
-      console.log(data.labels);
-      console.log(data.datasets[0]);
-      console.log(e.target.value);
     }
-    if (e.target.value == "high") {
-      console.log(handleValue.reverse());
+
+    if (e.target.value === "low") {
+      let val;
+      val = handleValue.handle1;
+      val = Object.values(val).sort((a, b) => a - b);
+      console.log(val);
+      console.log(handleValue.handle1);
       setData({
         ...data,
-        labels: handleValue2.slice(0, 16),
-      });
-      setData({
-        ...data,
+        labels: Object.values(val).slice(0, 15),
         datasets: [
           {
             ...data.datasets[0],
-            data: handleValue.slice(0, 16),
+            data: val.slice(0, 16),
           },
         ],
       });
-      console.log(data.labels);
-      console.log(data.datasets[0].data);
-      console.log(e.target.value);
+    }
+    if (e.target.value === "high") {
+      let val;
+      val = handleValue.handle1;
+      val = Object.values(val).sort((a, b) => a - b);
+      console.log(val.reverse());
+      val = Object.values(val).slice(0, 15);
+      console.log(val);
+      console.log(handleValue.handle1);
+      // Object.keys(val).map(() => {
+      //   Object.keys(handleValue.handle1).map(() => {
+      //     if (Object.values(val) == Object.values(handleValue.handle1)) {
+      //       console.log(
+      //         Object.values(val) == Object.values(handleValue.handle1)
+      //       );
+      //     } else {
+      //       console.log("not work");
+      //     }
+      //   });
+      // });
+      setData({
+        ...data,
+        labels: Object.values(val).slice(0, 15),
+        datasets: [
+          {
+            ...data.datasets[0],
+            data: val.slice(0, 16),
+          },
+        ],
+      });
     }
   }
 
@@ -149,15 +162,17 @@ export default function ExchangeRate() {
           <Bar data={data} options={options} height={40} width={100} />
         </div>
         <select onChange={handleChart}>
-          <option value="A-Z">A-Z</option>
-          <option value="Z-A">Z-A</option>
-          <option value="low">Rates(low to high)</option>
-          <option value="high">Rates(high to low)</option>
+          {option.map((opt, index) => {
+            return (
+              <option key={index} value={opt.options}>
+                {opt.options}
+              </option>
+            );
+          })}
         </select>
       </center>
     </>
   );
-
   return (
     <>
       <NavBar />

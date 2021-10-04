@@ -67,7 +67,10 @@ export default function Home() {
     e.preventDefault();
     setValue({
       ...value,
-      text2: (country[value.value2] / country[value.value1]) * value.text1,
+      text2: (
+        (country[value.value2] / country[value.value1]) *
+        value.text1
+      ).toFixed(2),
     });
   }
 
