@@ -1,41 +1,11 @@
 import { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
-import { Bar } from "react-chartjs-2";
+import { Button, Container } from "@mui/material";
+import { dataHandle } from "../public/data";
 import { getCachedData, option } from "../public/funct";
+import VerticalBars from "../components/Graph";
 export default function ExchangeRate() {
-  const [handleValue, setHandleValue] = useState([
-    {
-      handle1: null,
-    },
-  ]);
-  const [handleValue2, setHandleValue2] = useState([]);
-  const [data, setData] = useState({
-    labels: handleValue,
-    datasets: [
-      {
-        label: "# of Votes",
-        data: handleValue,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  });
-
+  const [country2, setCountry2] = useState([]);
   useEffect(() => {
     getDatas();
   }, []);
@@ -44,159 +14,57 @@ export default function ExchangeRate() {
     const cacheName = `myapp-${cacheVersion}`;
     const url =
       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
-
     // here url and cacheName is declared due to get data from cache storage and also for recognize parameter
-    //
     let postData = await getCachedData(cacheName, url);
-
-    setHandleValue({ handle1: postData.rates });
-    setHandleValue2(Object.keys(postData.rates));
-    // console.log(handleValue.handle1);
+    setCountry2(postData.rates);
+    // console.log(country2);
   }
-  function handleChart(e) {
-    if (e.target.value === "A-Z") {
-      let val;
-      val = handleValue.handle1;
-      val = Object.values(val).sort((a, b) => a - b);
-      console.log(val);
-      console.log(handleValue.handle1);
-      setData({
-        ...data,
-        labels: Object.values(val).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(val).slice(0, 15),
-          },
-        ],
-      });
-      // console.log(data.labels);
-      // console.log(data.datasets[0].data);
-      // console.log(e.target.value);
-    }
-
-    if (e.target.value === "Z-A") {
-      let val;
-      val = handleValue.handle1;
-      val = Object.values(val).sort((a, b) => a - b);
-      console.log(val.reverse());
-      console.log(val);
-      console.log(handleValue.handle1);
-      setData({
-        ...data,
-        labels: Object.values(val).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: val.slice(0, 16),
-          },
-        ],
-      });
-    }
-
-    if (e.target.value === "low") {
-      let val;
-      val = handleValue.handle1;
-      val = Object.values(val).sort((a, b) => a - b);
-      console.log(val);
-      console.log(handleValue.handle1);
-      setData({
-        ...data,
-        labels: Object.values(val).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: val.slice(0, 16),
-          },
-        ],
-      });
-    }
-    if (e.target.value === "high") {
-      const sortable = Object.fromEntries(
-        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
-      );
-
-      console.log(sortable);
-      // console.log(Object.keys(sortable));
-
-      // var sortable = [];
-      // for (var vehicle in handleValue.handle1) {
-      //   sortable.push([vehicle, handleValue.handle1[vehicle]]);
-      // }
-
-      // sortable.sort(function (a, b) {
-      //   return a[1] - b[1];
-      // });
-      // console.log(sortable);
-      // var k = Object.values(sortable);
-      // console.log(Object.values(k));
-
-      // let val;
-      // val = handleValue.handle1;
-      // val = Object.values(val).sort((a, b) => a - b);
-      // console.log(val.reverse());
-      // val = Object.values(val).slice(0, 15);
-      // console.log(val);
-      // console.log(handleValue.handle1);
-      // Object.keys(val).map(() => {
-      //   Object.keys(handleValue.handle1).map(() => {
-      //     if (Object.values(val) == Object.values(handleValue.handle1)) {
-      //       console.log(
-      //         Object.values(val) == Object.values(handleValue.handle1)
-      //       );
-      //     } else {
-      //       console.log("not work");
-      //     }
-      //   });
-      // });
-      setData({
-        ...data,
-
-        labels: Object.keys(sortable).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(sortable).slice(0, 15),
-          },
-        ],
-      });
-    }
-  }
-
-  const options = {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
-    },
-  };
-  //
-  const VerticalBar = () => (
-    <>
-      <center>
-        <div style={{ width: "1200px" }}>
-          <Bar data={data} options={options} height={40} width={100} />
-        </div>
-        <select onChange={handleChart}>
-          {option.map((opt, index) => {
-            return (
-              <option key={index} value={opt.options}>
-                {opt.options}
-              </option>
-            );
-          })}
-        </select>
-      </center>
-    </>
-  );
   return (
     <>
       <NavBar />
-      <VerticalBar />
+      <VerticalBars />
+      {dataHandle.map((data, index) => {
+        const { value, from, to } = data;
+        return (
+          <Container style={{ marginTop: "15px" }} key={index}>
+            <div
+              style={{
+                width: "1180px",
+                boxShadow: "1px 1px 2px 2px #EFEFEF",
+                paddingBottom: "40px",
+              }}
+            >
+              <Container style={{ paddingTop: "20px" }}>
+                <div
+                  style={{
+                    backgroundColor: "#EFEFEF",
+                    width: "1150px",
+                    paddingTop: "20px",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  <center>
+                    <span style={{ fontSize: "25px" }}>
+                      Country Start From '{value}' With Rates
+                    </span>
+                  </center>
+                  <ul>
+                    {Object.keys(country2)
+                      .slice(from, to)
+                      .map((currency2, index) => {
+                        return (
+                          <Button key={index} value={country2[currency2]}>
+                            {currency2} = {country2[currency2]}
+                          </Button>
+                        );
+                      })}
+                  </ul>
+                </div>
+              </Container>
+            </div>
+          </Container>
+        );
+      })}
     </>
   );
 }

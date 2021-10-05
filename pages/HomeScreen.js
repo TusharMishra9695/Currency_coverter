@@ -15,28 +15,29 @@ export default function Home() {
   useEffect(() => {
     getDatas();
   }, []);
-  async function getData() {
-    if (localStorage.getItem("postData") == null) {
-      const res = await fetch(
-        "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
-      );
-      const postData = await res.json();
-      console.log(postData);
-      localStorage.setItem("postData", JSON.stringify(postData.rates));
-      localStorage.setItem("baseData", JSON.stringify(postData));
-    } else {
-      alert(" API call's only once a day ");
-    }
+  // async function getData() {
+  //   if (localStorage.getItem("postData") == null) {
+  //     const res = await fetch(
+  //       "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c"
+  //     );
+  //     const postData = await res.json();
+  //     console.log(postData);
+  //     localStorage.setItem("postData", JSON.stringify(postData.rates));
+  //     localStorage.setItem("baseData", JSON.stringify(postData));
+  //   } else {
+  //     alert(" API call's only once a day ");
+  //   }
 
-    const result = JSON.parse(localStorage.getItem("postData"));
-    const result2 = JSON.parse(localStorage.getItem("baseData"));
-    setCountry(result);
-    setValue({
-      ...value,
-      texthandle: true,
-    });
-    setTime(result2);
-  }
+  //   const result = JSON.parse(localStorage.getItem("postData"));
+  //   const result2 = JSON.parse(localStorage.getItem("baseData"));
+  //   setCountry(result);
+  //   setValue({
+  //     ...value,
+  //     texthandle: true,
+  //     value1: result,
+  //   });
+  //   setTime(result2);
+  // }
 
   async function getDatas() {
     const cacheVersion = 1;
@@ -65,11 +66,37 @@ export default function Home() {
 
   function convert(e) {
     e.preventDefault();
+    console.log("i am called");
     setValue({
       ...value,
       text2: (
         (country[value.value2] / country[value.value1]) *
         value.text1
+      ).toFixed(2),
+    });
+  }
+  function handleSwap(e) {
+    e.preventDefault();
+    // alert("i am clicked");
+    // alert(value.value1);
+    setValue({
+      ...value,
+      text2: value.text1,
+      value2: value.value1,
+      text1: (
+        (country[value.value2] / country[value.value1]) *
+        value.text1
+      ).toFixed(2),
+      value1: value.value2,
+    });
+  }
+  function converts(e) {
+    e.preventDefault();
+    setValue({
+      ...value,
+      text1: (
+        value.text2 /
+        (country[value.value2] / country[value.value1])
       ).toFixed(2),
     });
   }
@@ -114,14 +141,14 @@ export default function Home() {
                           value1: e.target.value,
                         });
                       }}
-                      onClick={convert}
                       variant="outlined"
                     >
-                      <Select native>
+                      <Select onClick={converts} native>
                         {Object.keys(country).map((currency2, index) => {
                           return (
                             <option key={index} value={currency2}>
                               {currency2}
+                              {/* {value.value1} */}
                             </option>
                           );
                         })}
@@ -144,11 +171,14 @@ export default function Home() {
                       }}
                       value={value.text1 || ""}
                       autoComplete="off"
-                    />
+                      onClick={converts}
+                    ></TextField>
                   </div>
                 </div>
                 <div>
-                  <CompareArrowsIcon style={{ marginTop: "25px" }} />
+                  <h1 style={{ cursor: "pointer" }} onClick={handleSwap}>
+                    &#8595;&#8593;
+                  </h1>
                 </div>
                 <div>
                   <div>
@@ -157,14 +187,14 @@ export default function Home() {
                       onChange={(e) => {
                         setValue({ ...value, value2: e.target.value });
                       }}
-                      onClick={convert}
                       variant="outlined"
                     >
-                      <Select native>
+                      <Select onClick={convert} native>
                         {Object.keys(country).map((currency2, index) => {
                           return (
                             <option key={index} value={currency2}>
                               {currency2}
+                              {/* {value.value2} */}
                             </option>
                           );
                         })}
@@ -184,6 +214,7 @@ export default function Home() {
                           text2: e.target.value,
                         });
                       }}
+                      onClick={convert}
                       value={value.text2 || ""}
                       autoComplete="off"
                     />
