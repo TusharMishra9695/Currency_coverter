@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { getCachedData, option } from "../public/funct";
+import { getCachedData, option, AllValues } from "../public/funct";
 export default function VerticalBars() {
-  const [handleValue, setHandleValue] = useState([
-    {
-      handle1: null,
-    },
-  ]);
+  const [handleValue, setHandleValue] = useState({
+    handle1: AllValues,
+  });
   const [data, setData] = useState({
-    labels: handleValue,
+    labels: Object.keys(handleValue.handle1),
     datasets: [
       {
         label: "# of Votes",
-        data: handleValue,
+        data: Object.values(handleValue.handle1),
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -47,7 +45,9 @@ export default function VerticalBars() {
     //
     let postData = await getCachedData(cacheName, url);
     setHandleValue({ handle1: postData.rates });
+    console.log(handleValue.handle1);
   }
+  //
   function handleChart(e) {
     if (e.target.value === "A-Z") {
       const sortable = Object.fromEntries(
@@ -143,7 +143,7 @@ export default function VerticalBars() {
         <div style={{ width: "1200px" }}>
           <Bar data={data} options={options} height={40} width={100} />
         </div>
-        <select onChange={handleChart}>
+        <select onChange={handleChart} defaultValue="please select">
           {option.map((opt, index) => {
             return (
               <option key={index} value={opt.options}>
