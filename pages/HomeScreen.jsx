@@ -59,6 +59,13 @@ export default function Home() {
       value1: convertvalue.value2,
     });
   }
+  function Validate(body) {
+    if ( /^-?(\d+\.?\d*)$|(\d*\.?\d+)$/.test(body)) {
+      return true;
+    }
+
+    return false;
+  }
   return (
     <>
       <div style={{ height: "630px" }}>
@@ -135,17 +142,21 @@ export default function Home() {
                         onChange={(e) => {
                           setConvertValue({
                             ...convertvalue,
-                            text1: e.target.value,
+                            text1: e.target.value,  
                             text2: (
                               (country[convertvalue.value2] /
                                 country[convertvalue.value1]) *
                               e.target.value
                             ).toFixed(2),
+                           
                           });
                         }}
-                        value={convertvalue.text1 || ""}
+                        value={convertvalue.text1}
                         autoComplete="off"
                       ></TextField>
+                             {!Validate(convertvalue.text1) && (
+                <p style={{ color: "red" ,fontWeight:600,fontSize:"15px"}}>Please Enter Number's Only</p>
+              )}
                     </div>
                   </div>
                   <div>
@@ -204,6 +215,9 @@ export default function Home() {
                         value={convertvalue.text2 || ""}
                         autoComplete="off"
                       />
+                                     {!Validate(convertvalue.text2) && (
+                <p style={{ color: "red" ,fontWeight:600,fontSize:"15px"}}>Please Enter Number's Only</p>
+              )}
                     </div>
                   </div>
                 </div>
