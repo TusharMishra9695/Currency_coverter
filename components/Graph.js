@@ -1,7 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Bar } from "react-chartjs-2";
-import { getCachedData, option, AllValues } from "../public/funct";
+import ThemeContext from "../public/theme-context";
+import {
+  getCachedData,
+  option,
+  AllValues,
+  cacheName,
+  url,
+} from "../public/funct";
 export default function VerticalBars() {
+  const theme = useContext(ThemeContext);
+  const [optionValue, setOptionValue] = useState("please select");
   const [handleValue, setHandleValue] = useState({
     handle1: AllValues,
   });
@@ -36,92 +45,98 @@ export default function VerticalBars() {
     getDatas();
   }, []);
   async function getDatas() {
-    const cacheVersion = 1;
-    const cacheName = `myapp-${cacheVersion}`;
-    const url =
-      "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
-
-    // here url and cacheName is declared due to get data from cache storage and also for recognize parameter
-    //
     let postData = await getCachedData(cacheName, url);
     setHandleValue({ handle1: postData.rates });
     console.log(handleValue.handle1);
   }
   //
   function handleChart(e) {
-    if (e.target.value === "A-Z") {
-      const sortable = Object.fromEntries(
-        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
-      );
-      console.log(sortable);
-      setData({
-        ...data,
-        labels: Object.keys(sortable).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(sortable).slice(0, 15),
-          },
-        ],
-      });
-    }
+    setOptionValue(e.target.value);
+    switch (e.target.value) {
+      case "A-Z": {
+        const sortObject = Object.keys(handleValue.handle1)
+          .sort()
+          .reduce(
+            (res, key) => ((res[key] = handleValue.handle1[key]), res),
+            {}
+          );
+        setData({
+          ...data,
+          labels: Object.keys(sortObject).slice(0, 15),
+          datasets: [
+            {
+              ...data.datasets[0],
+              data: Object.values(sortObject).slice(0, 15),
+            },
+          ],
+        });
+        break;
+      }
+      case "Z-A": {
+        const sortObject = Object.keys(handleValue.handle1)
+          .sort()
+          .reduce(
+            (res, key) => ((res[key] = handleValue.handle1[key]), res),
+            {}
+          );
+        const sort = Object.fromEntries(
+          Object.entries(sortObject).reverse(([, a], [, b]) => a - b)
+        );
 
-    if (e.target.value === "Z-A") {
-      const sortable = Object.fromEntries(
-        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
-      );
-      const sort = Object.fromEntries(
-        Object.entries(sortable).reverse(([, a], [, b]) => a - b)
-      );
+        setData({
+          ...data,
+          labels: Object.keys(sort).slice(0, 15),
+          datasets: [
+            {
+              ...data.datasets[0],
+              data: Object.values(sort).slice(0, 15),
+            },
+          ],
+        });
+        break;
+      }
+      case "low to high": {
+        const sortable = Object.fromEntries(
+          Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
+        );
+        console.log(sortable);
+        setData({
+          ...data,
+          labels: Object.keys(sortable).slice(0, 15),
+          datasets: [
+            {
+              ...data.datasets[0],
+              data: Object.values(sortable).slice(0, 15),
+            },
+          ],
+        });
+        break;
+      }
+      case "high to low": {
+        const sortable = Object.fromEntries(
+          Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
+        );
+        // console.log(sortable);
+        const sort = Object.fromEntries(
+          Object.entries(sortable).reverse(([, a], [, b]) => a - b)
+        );
+        // console.log(sort);
+        setData({
+          ...data,
 
-      setData({
-        ...data,
-        labels: Object.keys(sort).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(sort).slice(0, 15),
-          },
-        ],
-      });
-    }
-
-    if (e.target.value === "low") {
-      const sortable = Object.fromEntries(
-        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
-      );
-      console.log(sortable);
-      setData({
-        ...data,
-        labels: Object.keys(sortable).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(sortable).slice(0, 15),
-          },
-        ],
-      });
-    }
-    if (e.target.value === "high") {
-      const sortable = Object.fromEntries(
-        Object.entries(handleValue.handle1).sort(([, a], [, b]) => a - b)
-      );
-      // console.log(sortable);
-      const sort = Object.fromEntries(
-        Object.entries(sortable).reverse(([, a], [, b]) => a - b)
-      );
-      // console.log(sort);
-      setData({
-        ...data,
-
-        labels: Object.keys(sort).slice(0, 15),
-        datasets: [
-          {
-            ...data.datasets[0],
-            data: Object.values(sort).slice(0, 15),
-          },
-        ],
-      });
+          labels: Object.keys(sort).slice(0, 15),
+          datasets: [
+            {
+              ...data.datasets[0],
+              data: Object.values(sort).slice(0, 15),
+            },
+          ],
+        });
+        break;
+      }
+      default: {
+        console.log("selected default");
+      }
     }
   }
 
@@ -143,7 +158,7 @@ export default function VerticalBars() {
         <div style={{ width: "1200px" }}>
           <Bar data={data} options={options} height={40} width={100} />
         </div>
-        <select onChange={handleChart} defaultValue="please select">
+        <select value={optionValue} onChange={handleChart} style={theme}>
           {option.map((opt, index) => {
             return (
               <option key={index} value={opt.options}>

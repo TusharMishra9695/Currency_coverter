@@ -8,7 +8,10 @@ export async function getCachedData(cacheName, url) {
 
   return await cachedResponse.json();
 }
-
+const cacheVersion = 1;
+export const cacheName = `myapp-${cacheVersion}`;
+export const url =
+  "http://data.fixer.io/api/latest?access_key=0ae329c5f31ee61cff8dda76ab72f43c";
 export const option = [
   {
     options: "please select",
@@ -20,10 +23,10 @@ export const option = [
     options: "Z-A",
   },
   {
-    options: "low",
+    options: "low to high",
   },
   {
-    options: "high",
+    options: "high to low",
   },
 ];
 export const AllValues = {
